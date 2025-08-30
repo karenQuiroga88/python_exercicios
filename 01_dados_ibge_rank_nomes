@@ -59,6 +59,8 @@ for nome, vezes in contarNomes.items():
     freq = somarFrequencia[nome]
     linhas.append({'nome': nome, 'vezes': vezes,'frequencia': freq})
 
-output_df = pd.DataFrame(linhas)
-print (output_df.sort_values(by="frequencia",ascending= False))
+output_df = pd.DataFrame(linhas).sort_values(by="frequencia",ascending= False)
+print(output_df)
 
+### Exibir os Top 5 nomes
+print(output_df.head(4))
