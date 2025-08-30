@@ -1,0 +1,64 @@
+"""
+1 - Consultar a API do IBGE e fazer o download dos arquivos 
+- considerando o ranking dos top 20 nomes da ultima década e ver o crescimento deles nas últimas decadas
+2-  Criar um dataframe para consulta dos dados unindo as tabelasn
+3- Fazer os cáculos, conforme aula de sábado 
+"""
+
+### 1- import json: importa o módulo json, que permite trabalhar com dados em formato JSON (JavaScript Object Notation), muito comum em APIs.
+import json, requests
+import pandas as pd
+
+### 1- Importando dados da década de 2010
+responseTop20_2010 = requests.get("https://servicodados.ibge.gov.br/api/v2/censos/nomes/ranking/?decada=2010")
+##print(f'Status code: {responseTop20_2010.status_code}')
+json_dataTop20_2010 = json.loads(responseTop20_2010.text) 
+###print(json_dataTop20_2010)
+
+### Criando o dataframe
+df_dataTop20_2010 = pd.DataFrame(json_dataTop20_2010 [0]['res'])
+###print(df_dataTop20_2010)
+
+df_dataTop20_2010['decada'] = 2010
+###print(df_dataTop20_2010)
+
+
+#### 2-Impartando dados da década de 2000
+responseTop20_2000 = requests.get("https://servicodados.ibge.gov.br/api/v2/censos/nomes/ranking/?decada=2000")
+##print(f' Status code: {responseTop20_2000}')
+jason_dataTop20_2000 = json.loads(responseTop20_2000.text)
+df_dataTop20_2000 = pd.DataFrame(jason_dataTop20_2000 [0]['res'])
+## Criando datafram 
+df_dataTop20_2000['decada'] = 2000
+###print(df_dataTop20_2000)
+
+"""CONCATENAR AS DUAS EXTRAÇÕES"""
+
+df_Consolidado = pd.concat([df_dataTop20_2000,df_dataTop20_2010],ignore_index = True) 
+###print(df_Consolidado)
+
+""" MÉTRICAS:
+1- CONTAR A QUANDIDADE DE NOMES ÚNICOS """
+
+print(f'Do total de 40 nomes, temos: {df_Consolidado["nome"].nunique()} nomes únicos') 
+print (df_Consolidado["nome"].nunique())
+
+"""2 - CONTAR O NÚMERO DE VEZES QUE CADA NOME SE REPETE"""
+print(df_Consolidado["nome"].value_counts())
+
+"""3- CONTAR QUANTAS VEZES CADA NOME SE REPETE E SOMAR A FREQUENCIA"""
+### conta quantas vezes cada nome aparece 
+contarNomes =  df_Consolidado["nome"].value_counts()
+
+### somar a frquencia por nome
+somarFrequencia = df_Consolidado.groupby("nome")["frequencia"].sum()
+
+## Consturação saída: Criar um DataFrame com 3 colunas: nome, vezes, frequencia
+linhas = []
+for nome, vezes in contarNomes.items():
+    freq = somarFrequencia[nome]
+    linhas.append({'nome': nome, 'vezes': vezes,'frequencia': freq})
+
+output_df = pd.DataFrame(linhas)
+print (output_df.sort_values(by="frequencia",ascending= False))
+
