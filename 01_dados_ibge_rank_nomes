@@ -1,7 +1,7 @@
 """
 1 - Consultar a API do IBGE e fazer o download dos arquivos 
-- considerando o ranking dos top 20 nomes da ultima década e ver o crescimento deles nas últimas decadas
-2-  Criar um dataframe para consulta dos dados unindo as tabelasn
+- considerando o ranking dos top 20 nomes das décadas de 2000 e 2010.
+2-  Criar um dataframe para consulta dos dados e conctenar as tabelas.
 3- Fazer os cáculos, conforme aula de sábado 
 """
 
